@@ -87,8 +87,13 @@ class SparseTable:
     def _query_acc(self, start_index: int, length: int) -> Any:
         log_2: int = length.bit_length() - 1
 
+        # This is approximately 45% faster than if-statement one below
+        # but it is a new feature of Python 3.10 which has not been
+        # released yet.
+        # if length.bit_count() == 1:
+
         # If the length is an order of 2, then just return it.
-        if length.bit_count() == 1:
+        if length == 1 << (length.bit_length() - 1):
             return self._table[log_2][start_index]
 
         # Call the accumulator function on the largest order 2 length
